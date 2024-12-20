@@ -170,8 +170,8 @@ int main(void)
 #if !USBFS_LOGS_ENABLE
     /* Initialize the UART for logging. */
     InitUart(LOGGING_SCB_IDX);
-
 #endif /* USBFS_LOGS_ENABLE */
+
     /*
      * Initialize the logger module. We are using a blocking print option which will
      * output the messages on UART immediately.

@@ -7,7 +7,7 @@ This code example demonstrates simple USBFS communication by printing a "Hello w
 
 [View this README on GitHub.](https://github.com/Infineon/mtb-example-fx20-hello-world)
 
-[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyNDA2MzYiLCJTcGVjIE51bWJlciI6IjAwMi00MDYzNiIsIkRvYyBUaXRsZSI6IkVaLVVTQiZ0cmFkZTsgRlgyMDogSGVsbG8gd29ybGQiLCJyaWQiOiJzdWt1IiwiRG9jIHZlcnNpb24iOiIxLjAuMCIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJXSVJFRCIsIkRvYyBGYW1pbHkiOiJTU19VU0IifQ==)
+[Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyNDA2MzYiLCJTcGVjIE51bWJlciI6IjAwMi00MDYzNiIsIkRvYyBUaXRsZSI6IkVaLVVTQiZ0cmFkZTsgRlgyMDogSGVsbG8gd29ybGQiLCJyaWQiOiJzdWt1IiwiRG9jIHZlcnNpb24iOiIxLjAuMSIsIkRvYyBMYW5ndWFnZSI6IkVuZ2xpc2giLCJEb2MgRGl2aXNpb24iOiJNQ0QiLCJEb2MgQlUiOiJXSVJFRCIsIkRvYyBGYW1pbHkiOiJTU19VU0IifQ==)
 
 
 ## Requirements
@@ -227,6 +227,7 @@ Document title: *CE240636* – *EZ-USB&trade; FX20: Hello world*
 
  Version | Description of change
  ------- | ---------------------
+ 1.0.1   | Updated to use latest USBFXStack from GitHub
  1.0.0   | New code example
 <br>
 
