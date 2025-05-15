@@ -35,16 +35,21 @@
 #define LOGGING_SCB_IDX         (1u)
 #define DEBUG_LEVEL             (3u)
 
-#if DEBUG_INFRA_EN
 /* Debug log related initilization */
 #define LOGBUF_SIZE (1024u)
+
 uint8_t logBuff[LOGBUF_SIZE];
+cy_stc_debug_config_t dbgCfg = {
+    .pBuffer         = logBuff,
+    .traceLvl        = DEBUG_LEVEL,
+    .bufSize         = LOGBUF_SIZE,
 #if USBFS_LOGS_ENABLE
-    cy_stc_debug_config_t dbgCfg = {logBuff, DEBUG_LEVEL, LOGBUF_SIZE, CY_DEBUG_INTFCE_USBFS_CDC, true};
+    .dbgIntfce       = CY_DEBUG_INTFCE_USBFS_CDC,
 #else
-    cy_stc_debug_config_t dbgCfg = {logBuff, DEBUG_LEVEL, LOGBUF_SIZE, CY_DEBUG_INTFCE_UART_SCB1, true};
-#endif /* USBFS_LOGS_ENABLE */
-#endif /* DEBUG_INFRA_EN */
+    .dbgIntfce       = CY_DEBUG_INTFCE_UART_SCB1,
+#endif
+    .printNow        = true
+};
 
 /*****************************************************************************
  * Function Name: PrintVersionInfo
@@ -119,8 +124,8 @@ void PeripheralInit (void)
 {
     cy_stc_gpio_pin_config_t pinCfg;
 
-    /* sequence */
-    Cy_Fx3g2_InitPeripheralClocks(true, true);
+    /* Enable clock for the USBFS peripheral. No clock needed for the USB ADC which is not in use. */
+    Cy_Fx3g2_InitPeripheralClocks(false, true);
 
     /* Configure the GPIOs used for firmware activity indication. */
     memset ((void *)&pinCfg, 0, sizeof(pinCfg));
@@ -129,6 +134,22 @@ void PeripheralInit (void)
     Cy_GPIO_Pin_Init(P0_0_PORT, P0_0_PIN, &pinCfg);
     pinCfg.hsiom     = P0_1_GPIO;
     Cy_GPIO_Pin_Init(P0_1_PORT, P0_1_PIN, &pinCfg);
+}
+
+/*****************************************************************************
+ * Function Name: Cy_Set_BasePri
+ *****************************************************************************
+ * Summary
+ *  This function sets the BASEPRI value for the active Cortex-M CPU core.
+ *
+ * Parameters:
+ *  val: BASEPRI value to be set.
+ ****************************************************************************/
+void Cy_Set_BasePri(uint32_t val)
+{
+#if (CY_CPU_CORTEX_M4)
+    __set_BASEPRI(val);
+#endif /* (CY_CPU_CORTEX_M4) */
 }
 
 /*****************************************************************************
@@ -161,10 +182,11 @@ int main(void)
     Cy_WDT_Unlock();
     Cy_WDT_Disable();
 
-    /* Enable all interrupts. */
-    __set_BASEPRI(0);
-
-    /* Enable interrupts. */
+    /*
+     * If logging is done through the USBFS port, ISR execution is required in this application.
+     * Set BASEPRI value to 0 to ensure all exceptions can run and then enable interrupts.
+     */
+    Cy_Set_BasePri(0);
     __enable_irq();
 
 #if !USBFS_LOGS_ENABLE
@@ -174,10 +196,9 @@ int main(void)
 
     /*
      * Initialize the logger module. We are using a blocking print option which will
-     * output the messages on UART immediately.
+     * output the messages immediately without buffering.
      */
     Cy_Debug_LogInit(&dbgCfg);
-
     Cy_SysLib_Delay(500);
 
     /* Print start-up string using SCB0 - UART. */
